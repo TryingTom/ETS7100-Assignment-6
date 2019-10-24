@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,24 +24,41 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
-import javax.xml.transform.ErrorListener;
+public class MainActivity extends AppCompatActivity implements FragmentA.FragmentAListener, FragmentB.FragmentBListener {
 
-public class MainActivity extends AppCompatActivity {
+    private FragmentA fragmentA;
+    private FragmentB fragmentB;
 
     ListView mListView;
     Button GET;
     RequestQueue jono;
+
+    /*
+    ->"Fragmentit on kyllä vaikeita, mutta joskus nekin pitää käydä..."
+    ->Antaa tehtävän jossa miljoona muuttujaa
+    <-Ei tajua edes kontekstia
+
+    Muuten ihan hyvä tehtävä, mutta oman työmuistin kapasiteetti ei riitä tajuamaan kaikkea mitä pitäisi tehdä.
+    Olisi hyvä opetella perusteet ennenkuin lähetään soveltamaan näin laajoilla tehtävillä.
+    Fragmentit ovat ehkä vähän liian suuri harppaus tässä vaiheessa, se vielä että pitää käyttää SQLiteä...
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button GET = (Button) findViewById(R.id.BtnGET);
-        ListView mListView = (ListView) findViewById(R.id.listView);
-        jono = Volley.newRequestQueue(this);
+        fragmentA = new FragmentA();
+        fragmentB = new FragmentB();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentA, fragmentA)
+                .replace(R.id.fragmentB, fragmentB)
+                .commit();
+
+        ListView mListView = (ListView) findViewById(R.id.fragmentA);
+        /*jono = Volley.newRequestQueue(this);
         final Gson gson = new Gson();
 
         // test
@@ -57,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
         // then add the person
         //peopleList.add(example);
 
-        final PersonListAdapter adapter = new PersonListAdapter(this, R.layout.adapter_view_layout, peopleList);
-        mListView.setAdapter(adapter);
+        final PersonListAdapter adapter = new PersonListAdapter(this, R.layout.FragmentA, peopleList);
+        mListView.setAdapter(adapter);*/
 
+
+        /*
         GET.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             peopleList.add(person);
                                             adapter.notifyDataSetChanged();
-                                             */
+
 
                                             // deserialize?
                                             Person person1 = gson.fromJson(String.valueOf(jsonObject), Person.class);
@@ -119,9 +136,19 @@ public class MainActivity extends AppCompatActivity {
                             .show();
                 }   // HaveNetwork (false) end
             }
-        });
+        });*/
 
 
+    }
+
+    @Override
+    public void onInputASent(CharSequence input) {
+        //FragmentB.updateEditText(input);
+    }
+
+    @Override
+    public void onInputBSent(JSONObject input) {
+        //FragmentA.updateEditText(input);
     }
 
     private boolean HaveNetwork()
